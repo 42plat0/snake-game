@@ -8,3 +8,18 @@ body{
 canvas{
     border: 2px white solid;
 }
+.score{
+    display:flex;
+    justify-content: space-between;
+}
+#highscore{
+    color: rgba(255, 255, 255, 0.5);
+}
+#current-score{
+    color: white;
+}
+.game{
+    padding: 20px;
+    display: grid;
+    justify-content: center;
+}

@@ -1,3 +1,5 @@
+let currentScoreDisplay = document.querySelector("#current-score")
+let highScoreDisplay = document.querySelector("#highscore")
 const gameBoard = document.querySelector("#game-board")
 let c = gameBoard.getContext("2d");
 const blockSize = 20;
@@ -7,7 +9,8 @@ let lastKey;
 let gameSpeed = 100;
 let snake;
 let food;
-
+let currentScore = 0;
+let highScore = 0;
 let gameOverMessage = "Game Over!"
 
 
@@ -44,11 +47,11 @@ class Snake extends Entity{
         }
     }
     ateItself(){
-            for(let i = 0; i < this.size.length; i++){
-                if(this.headX == this.size[i][0] && this.headY == this.size[i][1]){
-                    this.eatItself = true;
-                }  
-                }
+        for(let i = 0; i < this.size.length; i++){
+            if(this.headX == this.size[i][0] && this.headY == this.size[i][1]){
+                this.eatItself = true;
+            }  
+        }
         
     }
     redraw(){
@@ -77,6 +80,10 @@ class Snake extends Entity{
             food.reposition()
             //update snake coordinate array
             this.size.push([this.headX, this.headY])
+
+            currentScore = this.size.length - 2;
+            currentScoreDisplay.textContent = currentScore.toString().padStart(3, "0")
+        
             gameSpeed -= 3;
         }
     }
@@ -121,14 +128,15 @@ class Food extends Entity{
         this.draw();
     }
 }
-
 function newGame(){
     gameBoard.height = rows * blockSize
     gameBoard.width = cols * blockSize
+    
     c.fillRect(0, 0, gameBoard.height, gameBoard.width)
     snake = new Snake (10, 10, 0, "up");
     food = new Food()
-    gameSpeed = 100;
+    lastKey = ""
+    gameSpeed = 75.789;
     food.draw();
 }
 function game (){
@@ -136,11 +144,20 @@ function game (){
     setInterval(()=>{
         snake.move();
         if (!snake.inBound || snake.eatItself){
+            setTimeout(()=>{
+                if (currentScore > highScore){
+                highScore = currentScore.toString().padStart(3, "0");
+                highScoreDisplay.textContent = highScore;
+            }
+            currentScore = 0;
+            currentScoreDisplay.textContent = currentScore.toString().padStart(3, "0");
             alert(gameOverMessage)
             newGame()
+            , 50});
         }
     }, gameSpeed);
 }
+
 document.addEventListener("keydown", (e)=>{
     switch(e.key){
         case "ArrowUp":
